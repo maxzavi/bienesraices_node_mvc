@@ -1,0 +1,110 @@
+# NodeJs with Express
+
+Create project, without questions:
+
+```cmd
+npm init -Y
+```
+
+By Development, add dependency **nodemon**
+
+```cmd
+npm i -D nodemon
+```
+
+In package.json, add script **dev**
+
+```json
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+```
+
+Add dependency **express**
+
+```cmd
+npm i express
+```
+
+Use Pug dependency by use template engine
+
+```cmd
+npm i pug
+```
+
+Install tailwindcss
+
+```cmd
+npm i -D tailwindcss autoprefixer postcss postcss-cli
+```
+
+```cmd
+npx tailwindcss init -p
+```
+
+In file **tailwind.config.js** add path views
+
+```js
+export default {
+  content: ['./views/**/*.pug'],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+In fila **package.json** add script css: postcss-cli path tailwind.css
+
+```json
+ "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index",
+    "dev": "nodemon index",
+    "css": "postcss public/css/tailwind.css -o public/css/app.css --watch"
+  },
+ 
+```
+## ORM
+
+Add ORM **sequelize**
+```cmd
+npm install sequelize mysql2
+```
+
+Create folder **config** and add file db.js
+
+## Environment variables
+
+Use **dotenv** by variables:
+
+```cmd
+npm i dotenv
+```
+
+add file .env
+
+```properties
+DB_NAME=bienesraices_node_mvc
+DB_USERNAME=root
+DB_PASSWORD=******
+DB_HOST=localhost
+DB_PORT=3306
+```
+## Express Validator
+
+Add dependency **express-validator**
+
+```cmd
+npm i express-validator
+```
+
+## Hash using bcrypt
+
+Add dependency **bcrypt**
+
+```cmd
+npm i bcrypt
+```
