@@ -92,6 +92,14 @@ DB_USERNAME=root
 DB_PASSWORD=******
 DB_HOST=localhost
 DB_PORT=3306
+
+
+EMAIL_HOST=sandbox.smtp.mailtrap.io
+EMAIL_PORT=2525
+EMAIL_USER=********
+EMAIL_PAASSWORD=**********
+
+HOST_URL=http://localhost
 ```
 ## Express Validator
 
@@ -108,3 +116,23 @@ Add dependency **bcrypt**
 ```cmd
 npm i bcrypt
 ```
+
+
+## Emails
+
+Add dependency **nodemailer**
+
+```cmd
+npm i nodemailer
+```
+
+Use service https://mailtrap.io/
+
+## CSRF protection
+
+Add dependencies **csurf** and **cookie-parser**
+
+```cmd
+npm i csurf cookie-parser
+```
+

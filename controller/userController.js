@@ -1,6 +1,7 @@
 import { check, validationResult } from 'express-validator'
 import User from '../models/User.js'
 import { generateId} from '../helpers/tokens.js'
+import { emailRegister} from '../helpers/emails.js'
 
 const formLogin = (req,res)=>{
     res.render('auth/login',{
@@ -11,12 +12,12 @@ const formLogin = (req,res)=>{
 
 const formRegister = (req,res)=>{
     res.render('auth/register',{
-        page:"Crear cuenta"
+        page:"Crear cuenta",
+        csrfToken: req.csrfToken()
     });
 };
 
 const register = async (req,res)=>{
-    console.log(req.body);
     //Validate
     await check('name').notEmpty().withMessage('El nombre es obligatorio').run(req);
     await check('email').isEmail().withMessage('El email no es correcto').run(req);
@@ -31,7 +32,8 @@ const register = async (req,res)=>{
             user:{
                 name: req.body.name,
                 email: req.body.email
-            }
+            },
+            csrfToken: req.csrfToken()
         });
     }
 
@@ -43,7 +45,6 @@ const register = async (req,res)=>{
         }
     });
 
-    console.log(userExists);
     if (userExists){
         return res.render('auth/register',{
             page:"Crear cuenta",
@@ -51,14 +52,55 @@ const register = async (req,res)=>{
             user:{
                 name: req.body.name,
                 email: req.body.email
-            }
+            },
+            csrfToken: req.csrfToken()
         });
     }
 
     const user = await User.create({name,email, password, token:generateId()});
-    res.json(user)
+
+    //Send confirmation email
+    await emailRegister({
+        name,
+        email,
+        token: user.token
+    })
+
+    res.render('templates/messages',{
+        page:"Cuenta creada",
+        message: "Se envió un email para confirmar la cuenta",
+        csrfToken: req.csrfToken()
+    });
+    //res.json(user)
 };
 
+const confirm = async (req, res)=>{
+
+    const { token } = req.params;
+    
+    //console.log(`Tokem ${token}`);
+    const user = await User.findOne({where:{token}});
+
+    if (!user){
+        return res.render('auth/confirm-account',{
+            page:"Error al confirmar cuenta",
+            message: "Hubo un error al confirmar tu cuenta, intenta de nuevo",
+            error:true
+        });
+    
+    }
+    //Confirmar cuenta
+    user.token=null;
+    user.confirmed=true
+
+    await user.save();
+    res.render('auth/confirm-account',{
+        page:"Cuenta confirmada",
+        message: "La cuenta se confirmó correctamente",
+        error:false
+    });
+
+}
 const formRecoveryPassword = (req,res)=>{
     res.render('auth/recovery-password',{
         page:"Recuperar password"
@@ -69,5 +111,6 @@ export {
     formLogin,
     formRegister,
     register,
+    confirm,
     formRecoveryPassword
 }

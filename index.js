@@ -1,9 +1,11 @@
 import express from 'express'
+import csrf from 'csurf';
+import cookieParser from 'cookie-parser'
 import userroutes from './routes/userroutes.js'
 import db from './config/db.js'
 
 const app = express();
-const port =3000;
+const port = process.env.port || 3000;
 
 try {
     await db.authenticate();
@@ -14,6 +16,10 @@ try {
 }
 //Enabled read forms
 app.use(express.urlencoded({extended:true}));
+//Enable cookie parser
+app.use(cookieParser());
+//Enable CSRF
+app.use(csrf({cookie:true}));
 //View
 app.set('view engine','pug');
 app.set('views','./views');
