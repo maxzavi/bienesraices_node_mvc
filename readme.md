@@ -100,6 +100,8 @@ EMAIL_USER=********
 EMAIL_PAASSWORD=**********
 
 HOST_URL=http://localhost
+
+JWT_SECRET=*******
 ```
 ## Express Validator
 
@@ -136,3 +138,10 @@ Add dependencies **csurf** and **cookie-parser**
 npm i csurf cookie-parser
 ```
 
+## JWT
+
+Add dependency **jsonwebtoken**
+
+```cmd
+npm i jsonwebtoken
+```

@@ -1,15 +1,66 @@
 import { check, validationResult } from 'express-validator'
 import bcrypt from 'bcrypt'
 import User from '../models/User.js'
-import { generateId} from '../helpers/tokens.js'
+import { generateJwt, generateId} from '../helpers/tokens.js'
 import { emailRegister, emailResetPassword} from '../helpers/emails.js'
+import csurf from 'csurf'
 
 const formLogin = (req,res)=>{
     res.render('auth/login',{
         autenticado: false,
-        page:"Iniciar sesión"
+        page:"Iniciar sesión",
+        csrfToken: req.csrfToken()
     });
 };
+
+const authenticate = async (req, res) =>{
+    //Validate
+    await check('email').isEmail().withMessage('El email es obligatorio').run(req);
+    await check('password').notEmpty().withMessage('El password es obliugatorio').run(req);
+
+    let result = validationResult(req);
+    if (!result.isEmpty()){
+        return res.render('auth/login',{
+            page:"Iniciar sesión",
+            errores: result.array(),
+            csrfToken: req.csrfToken()
+        });
+    }
+
+    const {  email, password} = req.body;
+
+    const user = await User.findOne({where:{email}});
+    if (!user){
+        return res.render('auth/login',{
+            page:"Iniciar sesión",
+            errores: [{msg:"El usuario no existe"}],
+            csrfToken: req.csrfToken()
+        });
+    }
+    if (!user.confirmed){
+        return res.render('auth/login',{
+            page:"Iniciar sesión",
+            errores: [{msg:"Tu cuenta no ha sido confirmada"}],
+            csrfToken: req.csrfToken()
+        });
+    }
+
+    if (!user.verifyPassword(password)){
+        return res.render('auth/login',{
+            page:"Iniciar sesión",
+            errores: [{msg:"El password es incorrecto"}],
+            csrfToken: req.csrfToken()
+        });
+    }
+
+    //Authenticate
+    const jwtoken = generateJwt(user.id,user.name);
+
+    //console.log(jwtoken);
+    return res.cookie('_token', jwtoken,{
+        httpOnly:true
+    }).redirect('/my-properties');
+}
 
 const formRegister = (req,res)=>{
     res.render('auth/register',{
@@ -212,6 +263,7 @@ const newPassword = async (req, res)=>{
 
 export {
     formLogin,
+    authenticate,
     formRegister,
     register,
     confirm,

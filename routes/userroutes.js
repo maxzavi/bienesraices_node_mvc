@@ -1,10 +1,13 @@
 import express from 'express';
 
-import { formLogin, formRegister, register, confirm, formRecoveryPassword, resetPasswod, validateToken, newPassword}  from "../controller/userController.js"
+import { formLogin, formRegister, authenticate ,register, confirm, formRecoveryPassword, resetPasswod, validateToken, newPassword}  from "../controller/userController.js"
 
 const router = express.Router();
 
 router.get("/login",formLogin);
+
+router.post("/authenticate", authenticate)
+
 router.get("/register",formRegister);
 router.post("/register",register);
 router.get("/confirm/:token",confirm);
