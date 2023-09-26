@@ -184,3 +184,33 @@ Add script usinng \"
     "dev":"concurrently \"npm run css\" \"npm run js\""
   },
 ```
+
+## Maps
+
+In pug file
+```js
+block styles
+    link(rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css")
+```
+
+In js file maps.js:
+
+```js
+(function() {
+    const lat = -12.0466716;
+    const lng = -77.0310093;
+    const zoom=13;
+    let marker;
+    const map = L.map('map').setView([lat, lng ], zoom);
+    
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    marker = new L.marker([lat,lng],{
+        draggable:true,
+        autoPan:true
+    }).addTo(map)
+})()
+```
