@@ -4,6 +4,8 @@
     const zoom=13;
     let marker;
     const map = L.map('map').setView([lat, lng ], zoom);
+
+    const geocodeService = L.esri.Geocoding.geocodeService();
     
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -17,10 +19,17 @@
 
     marker.on('moveend', function(e){
         marker=e.target
-
         const position= marker.getLatLng();
-
-        console.log(position);
         map.panTo(new L.LatLng(position.lat, position.lng))
+        // Get address info
+        geocodeService.reverse().latlng(position,13).run(function(err, result){
+            console.log(result);
+            marker.bindPopup(result.address.LongLabel)
+            document.querySelector('.street').textContent= result?.address?.Address ?? '';
+            document.querySelector('#street').value= result?.address?.Address ?? '';
+            document.querySelector('#lat').value= result?.latlng?.lat ?? '';
+            document.querySelector('#lng').value= result?.latlng?.lng ?? '';
+            
+        })
     })
 })()
