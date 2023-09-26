@@ -76,6 +76,13 @@ npm install sequelize mysql2
 
 Create folder **config** and add file db.js
 
+
+## MySql Database
+
+Deploy in docker, see repo https://github.com/maxzavi/mysql-docker-k8s
+
+
+
 ## Environment variables
 
 Use **dotenv** by variables:
@@ -144,4 +151,36 @@ Add dependency **jsonwebtoken**
 
 ```cmd
 npm i jsonwebtoken
+```
+
+## WebPack
+
+Add dependencies **webpack** and **webpack-cli**
+
+```cmd
+npm i -D webpack webpack-cli
+```
+
+Add file webpack.config.js
+
+## Concurrently
+
+Use both scripts in one, add dependencie **concurrently**
+
+```cmd
+npm i -D concurrently
+```
+
+Add script usinng \"
+
+```json
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index",
+    "server": "nodemon index",
+    "css": "postcss public/css/tailwind.css -o public/css/app.css --watch",
+    "js": "webpack --watch",
+    "dev":"concurrently \"npm run css\" \"npm run js\""
+  },
 ```

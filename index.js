@@ -2,6 +2,7 @@ import express from 'express'
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser'
 import userroutes from './routes/userroutes.js'
+import propertiesroutes from './routes/propertiesroutes.js'
 import db from './config/db.js'
 
 const app = express();
@@ -29,6 +30,7 @@ app.use(express.static('public'));
 
 //Routes
 app.use("/user",userroutes);
+app.use("/",propertiesroutes);
 
 app.listen(port,()=>{
     console.log(`Listening in port: ${port}`);

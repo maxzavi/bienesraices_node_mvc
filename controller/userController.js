@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt'
 import User from '../models/User.js'
 import { generateJwt, generateId} from '../helpers/tokens.js'
 import { emailRegister, emailResetPassword} from '../helpers/emails.js'
-import csurf from 'csurf'
 
 const formLogin = (req,res)=>{
     res.render('auth/login',{
