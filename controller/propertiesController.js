@@ -1,6 +1,5 @@
 import { validationResult} from 'express-validator'
-import Category from '../models/Category.js'
-import Price from '../models/Price.js'
+import {Category, Price, Property} from '../models/index.js'
 
 const admin = (req,res)=>{
     res.render('properties/admin',{
@@ -43,6 +42,29 @@ const save = async (req, res)=>{
             csrfToken: req.csrfToken(),
             data: req.body
         })
+    }
+    //Create property
+
+    const {title, description, bedrooms, parking, wc, street, lat, lng, price: priceId, category: categoryId} = req.body
+
+    try {
+        const propertySaved = await Property.create({
+            title,
+            description,
+            bedrooms,
+            parking,
+            wc,
+            street,
+            lat,
+            lng,
+            priceId,
+            categoryId,
+            userId: req.user.id,
+            image:' '
+        })
+        res.redirect(`/properties/add-image/${propertySaved.id}`)
+    } catch (error) {
+        console.log(error);
     }
 
 }

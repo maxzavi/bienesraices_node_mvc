@@ -1,13 +1,15 @@
 import express from 'express'
 import { body } from 'express-validator';
+import protectPath from '../middleware/protectPath.js';
 
 import {admin, create, save} from '../controller/propertiesController.js'
 const router = express.Router();
 
-router.get("/my-properties", admin);
+router.get("/my-properties", protectPath, admin);
 
-router.get("/properties/create", create);
+router.get("/properties/create", protectPath,create);
 router.post("/properties/create", 
+    protectPath,
     body('title').notEmpty().withMessage('El título del anuncio es obligatorio'),
     body('description')
         .notEmpty().withMessage('La descripción no puede ir vacía')

@@ -1,12 +1,10 @@
 import { exit } from 'process';
 
 import categories  from './category.js';
-//import Category from '../models/Category.js';
-
 import prices  from './price.js';
-//import Price from '../models/Price.js';
+import users from './user.js'
 
-import {Category, Price} from '../models/index.js'
+import {Category, Price, User} from '../models/index.js'
 
 import db from '../config/db.js'
 
@@ -19,7 +17,8 @@ const importData = async ()=>{
 
         await Promise.all([
             Category.bulkCreate(categories),
-            Price.bulkCreate(prices)
+            Price.bulkCreate(prices),
+            User.bulkCreate(users)
         ])
         console.log('Datos importados correctamente');
         exit();
