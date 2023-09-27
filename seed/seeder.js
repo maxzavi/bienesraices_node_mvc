@@ -1,11 +1,12 @@
 import { exit } from 'process';
 
 import categories  from './category.js';
-import Category from '../models/Category.js';
+//import Category from '../models/Category.js';
 
 import prices  from './price.js';
-import Price from '../models/Price.js';
+//import Price from '../models/Price.js';
 
+import {Category, Price} from '../models/index.js'
 
 import db from '../config/db.js'
 
@@ -20,11 +21,8 @@ const importData = async ()=>{
             Category.bulkCreate(categories),
             Price.bulkCreate(prices)
         ])
-        
         console.log('Datos importados correctamente');
-
         exit();
-
     } catch (error) {
        console.log(error);
        exit(1); 
@@ -46,7 +44,6 @@ const cleanData = async ()=>{
         ]);*/
         await db.sync({force:true});
         console.log('Datos eliminados correctamente');
-
         exit();
     } catch (error) {
         console.log(error);

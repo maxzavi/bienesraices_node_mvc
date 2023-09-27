@@ -1,6 +1,6 @@
 (function() {
-    const lat = -12.0466716;
-    const lng = -77.0310093;
+    const lat = document.querySelector('#lat').value || -12.0466716;
+    const lng = document.querySelector('#lng').value || -77.0310093;
     const zoom=13;
     let marker;
     const map = L.map('map').setView([lat, lng ], zoom);
@@ -23,7 +23,7 @@
         map.panTo(new L.LatLng(position.lat, position.lng))
         // Get address info
         geocodeService.reverse().latlng(position,13).run(function(err, result){
-            console.log(result);
+            //console.log(result);
             marker.bindPopup(result.address.LongLabel)
             document.querySelector('.street').textContent= result?.address?.Address ?? '';
             document.querySelector('#street').value= result?.address?.Address ?? '';
