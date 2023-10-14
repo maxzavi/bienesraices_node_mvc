@@ -3,7 +3,7 @@
 Create project, without questions:
 
 ```cmd
-npm init -Y
+npm init -y
 ```
 
 By Development, add dependency **nodemon**
@@ -81,7 +81,7 @@ Create folder **config** and add file db.js
 
 Deploy in docker, see repo https://github.com/maxzavi/mysql-docker-k8s
 
-
+Create db **bienesraices_node_mvc** in mysql
 
 ## Environment variables
 
@@ -213,4 +213,26 @@ In js file maps.js:
         autoPan:true
     }).addTo(map)
 })()
+```
+
+## Dropzone
+
+Add dependency **dropzone@5.9.3**
+
+```cmd
+npm i dropzone@5.9.3
+```
+add style in page pug:
+
+```htm
+link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.css")
+```
+
+
+## Multer
+
+Add dependencie **multer**
+
+```cmd
+npm i multer
 ```

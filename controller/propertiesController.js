@@ -1,7 +1,17 @@
 import { validationResult} from 'express-validator'
 import {Category, Price, Property} from '../models/index.js'
 
-const admin = (req,res)=>{
+const admin = async (req,res)=>{
+    const { id } = req.user
+    console.log(id);
+
+    const properties = await Property.findAll({
+        where:{
+            userId:id
+        }
+    })
+    console.log(properties);
+    
     res.render('properties/admin',{
         page:'Mis propiedades',
         bar: true
@@ -66,11 +76,70 @@ const save = async (req, res)=>{
     } catch (error) {
         console.log(error);
     }
+}
 
+const addImage = async (req, res)=> {
+    const { id } = req.params
+    
+    //Validate exists property
+    const property = await Property.findByPk(id)
+    if(!property){
+        return res.redirect("/my-properties")
+    }
+    //Valdate property is not published
+
+    if(property.published){
+        return res.redirect("/my-properties")
+    }
+
+    //Validate user is owner of property
+    if(req.user.id.toString() !== property.userId.toString()){
+        return res.redirect("/my-properties")
+    }
+
+    res.render('properties/add-image',{
+        page:`Agregar imagen: ${property.title}`,
+        property,
+        bar:true,
+        csrfToken: req.csrfToken()
+    })
+
+}
+
+const saveImage = async (req, res, next)=>{
+    const { id } = req.params
+    
+    //Validate exists property
+    const property = await Property.findByPk(id)
+    if(!property){
+        return res.redirect("/my-properties")
+    }
+    //Valdate property is not published
+
+    if(property.published){
+        return res.redirect("/my-properties")
+    }
+
+    //Validate user is owner of property
+    if(req.user.id.toString() !== property.userId.toString()){
+        return res.redirect("/my-properties")
+    }
+
+    try {
+        property.image=req.file.filename
+        property.published=1
+        //Save image and publish property
+        property.save()
+        next()
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export  {
     admin,
     create,
-    save
+    save,
+    addImage,
+    saveImage
 }

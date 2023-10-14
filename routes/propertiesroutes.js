@@ -1,8 +1,10 @@
 import express from 'express'
 import { body } from 'express-validator';
 import protectPath from '../middleware/protectPath.js';
+import {addImage, admin, create, save, saveImage} from '../controller/propertiesController.js'
+import upload from '../middleware/uploadImage.js'
 
-import {admin, create, save} from '../controller/propertiesController.js'
+
 const router = express.Router();
 
 router.get("/my-properties", protectPath, admin);
@@ -22,5 +24,14 @@ router.post("/properties/create",
     body('lat').notEmpty().withMessage('Ubica la propiedad en el mapa'),
 
     save);
+router.get("/properties/add-image/:id", 
+    protectPath,
+    addImage)
+
+router.post("/properties/add-image/:id",  
+    protectPath,
+    upload.single('image'),
+    saveImage
+)
 
 export default router

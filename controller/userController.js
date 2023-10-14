@@ -15,7 +15,7 @@ const formLogin = (req,res)=>{
 const authenticate = async (req, res) =>{
     //Validate
     await check('email').isEmail().withMessage('El email es obligatorio').run(req);
-    await check('password').notEmpty().withMessage('El password es obliugatorio').run(req);
+    await check('password').notEmpty().withMessage('El password es obligatorio').run(req);
 
     let result = validationResult(req);
     if (!result.isEmpty()){

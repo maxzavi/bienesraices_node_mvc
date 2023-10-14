@@ -4,4 +4,5 @@ package-lock.json
 .env
 public/css/app.css
 public/js/
-
+public/uploads/
+.vscode/
