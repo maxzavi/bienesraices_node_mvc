@@ -1,7 +1,7 @@
 import express from 'express'
 import { body } from 'express-validator';
 import protectPath from '../middleware/protectPath.js';
-import {addImage, admin, create, save, saveImage} from '../controller/propertiesController.js'
+import {addImage, admin, create, save, saveImage, edit, saveChanges, deleteProperty} from '../controller/propertiesController.js'
 import upload from '../middleware/uploadImage.js'
 
 
@@ -22,7 +22,6 @@ router.post("/properties/create",
     body('parking').isNumeric().withMessage('Selecciona la cantidad de estacionamientos'),
     body('wc').isNumeric().withMessage('Selecciona la cantidad de wc'),
     body('lat').notEmpty().withMessage('Ubica la propiedad en el mapa'),
-
     save);
 router.get("/properties/add-image/:id", 
     protectPath,
@@ -33,5 +32,27 @@ router.post("/properties/add-image/:id",
     upload.single('image'),
     saveImage
 )
+
+router.get("/properties/edit/:id", 
+    protectPath,
+    edit)
+
+router.post("/properties/edit/:id", 
+    protectPath,
+    body('title').notEmpty().withMessage('El título del anuncio es obligatorio'),
+    body('description')
+        .notEmpty().withMessage('La descripción no puede ir vacía')
+        .isLength({max:200}).withMessage('La descripción es muy larga'),
+    body('category').isNumeric().withMessage('Debes seleccionar una categoría'),
+    body('price').isNumeric().withMessage('Debes seleccionar un rango de precios'),
+    body('bedrooms').isNumeric().withMessage('Selecciona la cantidad de habitaciones'),
+    body('parking').isNumeric().withMessage('Selecciona la cantidad de estacionamientos'),
+    body('wc').isNumeric().withMessage('Selecciona la cantidad de wc'),
+    body('lat').notEmpty().withMessage('Ubica la propiedad en el mapa'),
+    saveChanges);
+    
+router.post("/properties/delete/:id", 
+    protectPath,
+    deleteProperty);
 
 export default router
