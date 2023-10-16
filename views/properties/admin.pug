@@ -16,7 +16,7 @@ block container
                                 div(class="sm:w-1/4 md:w-1/6")
                                     img(src=`uploads/${property.image}`, alt=`Imagen propiedad ${property.title}` class="w-full block")
                                 div(class="sm:w-2/4 md:w-3/6 lg:w-4/6 space-y-3")
-                                    a(class="block text-2xl font-extrabold text-indigo-600 truncate" href="#")=property.title
+                                    a(class="block text-2xl font-extrabold text-indigo-600 truncate" href=`/property/${property.id}`)=property.title
                                     p(class="text-sm text-black font-bold")=property.category.name
                                     p(class="text-sm text-gray-500 font-bold flex items-center")
                                         svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6")
@@ -25,7 +25,7 @@ block container
                                         =property.price.name
                                     
                                 div(class="sm:w-1/4 md:w-2/6 lg:flex-1 flex flex-col lg:flex-row gap-2")
-                                    form(action="#" method="")
+                                    form(action="" method="")
                                         input(type="submit" class=`w-full px-2 py-2 md:py-1 text-xs leading-5 font-semibold rounded cursor-pointer ${property.published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}` value=`${property.published? 'Publicado': 'No Publicado'}`)
                                     a(href=`/properties/edit/${property.id}` class="px-2 text-center py-2 md:py-1 text-xs leading-5 font-semibold rounded cursor-pointer bg-indigo-100 text-indigo-800") Editar
                                     form(action=`/properties/delete/${property.id}` method="POST")

@@ -245,6 +245,30 @@ const deleteProperty = async (req, res)=>{
 
 }
 
+const showProperty = async (req, res)=>{
+
+    const { id } = req.params
+    //Validate exists property
+    const property = await Property.findByPk(id,{
+        include:[
+            {model: Category, as: 'category'},
+            {model: Price, as:'price'}
+        ]
+    })
+
+    if(!property){
+        return res.redirect("/404")
+    }
+ 
+ 
+    res.render("properties/show",{
+        bar:true,
+        property,
+        page:property.title
+    })
+
+}
+
 export  {
     admin,
     create,
@@ -253,5 +277,6 @@ export  {
     saveImage,
     edit,
     saveChanges,
-    deleteProperty
+    deleteProperty,
+    showProperty
 }
