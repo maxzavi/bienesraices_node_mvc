@@ -1,24 +1,57 @@
 import { validationResult} from 'express-validator'
 import { unlink } from 'node:fs/promises'
 import {Category, Price, Property} from '../models/index.js'
+import { where } from 'sequelize';
+import { log } from 'node:console';
 
 const admin = async (req,res)=>{
-    const { id } = req.user
-    const properties = await Property.findAll({
-        where:{
-            userId:id
-        },
-        include:[
-            {model: Category, as: 'category'},
-            {model: Price, as:'price'}
-        ]
-    })
-    res.render('properties/admin',{
-        page:'Mis propiedades',
-        bar: true,
-        properties,
-        csrfToken: req.csrfToken()
-    });
+    const { page : pageCurrent }= req.query;
+    
+    console.log(pageCurrent);
+
+    const expresion = /^[0-9]$/
+
+    if(!expresion.test(pageCurrent)){
+        return res.redirect("/my-properties?page=1")
+    }
+    const limit=5;
+    const offset=(limit*pageCurrent)-limit
+    try {
+        const { id } = req.user
+        const [properties,total] = await Promise.all([
+            Property.findAll({
+                limit,
+                offset,
+                where:{
+                    userId:id
+                },
+                include:[
+                    {model: Category, as: 'category'},
+                    {model: Price, as:'price'}
+                ]
+            })
+            ,
+            Property.count({
+                where : {
+                    userId:id
+                }
+            })
+        ]) 
+        
+        const ceil = Math.ceil(total/limit)
+
+        res.render('properties/admin',{
+            page:'Mis propiedades',
+            bar: true,
+            properties,
+            csrfToken: req.csrfToken(),
+            pages: ceil,
+            pageCurrent
+        })
+    } catch (error) {
+        console.log(error);
+    }
+   
 }
 
 const create = async  (req, res)=>{

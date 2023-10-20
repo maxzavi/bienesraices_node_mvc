@@ -11,7 +11,9 @@
     "js": "webpack --watch",
     "dev": "concurrently \"npm run css\" \"npm run js\"",
     "db:import": "node ./seed/seeder.js -i",
-    "db:clean": "node ./seed/seeder.js -d"
+    "db:clean": "node ./seed/seeder.js -d",
+    "db:properties": "node ./seed/seeder.js -p"
+
   },
   "type": "module",
   "keywords": [

@@ -3,8 +3,9 @@ import { exit } from 'process';
 import categories  from './category.js';
 import prices  from './price.js';
 import users from './user.js'
+import properties from './properties.js';
 
-import {Category, Price, User} from '../models/index.js'
+import {Category, Price, Property, User} from '../models/index.js'
 
 import db from '../config/db.js'
 
@@ -30,17 +31,6 @@ const importData = async ()=>{
 
 const cleanData = async ()=>{
     try {
-        /*await Promise.all([
-            
-            Category.destroy({
-                where:{},
-                truncate: true
-            }),
-            Price.destroy({
-                where:{},
-                truncate: true
-            })
-        ]);*/
         await db.sync({force:true});
         console.log('Datos eliminados correctamente');
         exit();
@@ -50,10 +40,33 @@ const cleanData = async ()=>{
     }
 }
 
+const importDataProperties = async ()=>{
+    try {
+        
+        await db.authenticate();
+
+        await db.sync();
+
+        await Promise.all([
+            Property.bulkCreate(properties)
+        ])
+        console.log('Datos importados correctamente');
+        exit();
+    } catch (error) {
+       console.log(error);
+       exit(1); 
+    }
+}
+
+
 if (process.argv[2] === "-i"){
     importData();
 }
 
 if (process.argv[2] === "-d"){
     cleanData();
+}
+
+if (process.argv[2] === "-p"){
+    importDataProperties();
 }
