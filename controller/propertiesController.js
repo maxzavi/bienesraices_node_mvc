@@ -178,6 +178,8 @@ const saveImage = async (req, res, next)=>{
 const edit = async (req,res)=>{
 
     const {id} = req.params
+    const { page:pageCurrent } = req.query
+
 
     //Validate exists property
     const property = await Property.findByPk(id)
@@ -201,13 +203,17 @@ const edit = async (req,res)=>{
         categories,
         prices,
         csrfToken: req.csrfToken(),
-        data:property
+        data:property,
+        pageCurrent
     })
 
 }
 
 const saveChanges = async (req,res) =>{
     const {id} = req.params
+    const { pageCurrent } = req.body
+
+    
 
     //Validate exists property
     const property = await Property.findByPk(id)
@@ -233,7 +239,7 @@ const saveChanges = async (req,res) =>{
             prices, 
             errores: result.array(),
             csrfToken: req.csrfToken(),
-            data: req.body
+            data: req.body,
         })
     }
     //Create property
@@ -254,7 +260,7 @@ const saveChanges = async (req,res) =>{
             categoryId
         })
         await property.save()
-        res.redirect("/my-properties")
+        res.redirect(`/my-properties?page=${pageCurrent}`)
     } catch (error) {
         console.log(error);
     }
