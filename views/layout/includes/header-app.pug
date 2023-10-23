@@ -3,6 +3,11 @@ header.bg-indigo-600.p-4
         h1.text-2xl.text-white.font-extrabold.text-center Bienes
             span.font-normal Raices
         nav(class="my-5 text-sm md:flex md:items-center md:gap-3 font-bold text-white hidden")
-            a(href="") Mis propiedades
-            a(href="") Mi Perfil
+            a(href="/user/register") Crear cuenta
+            a(href="/user/login") Iniciar sesión
             a(href="" class=" bg-indigo-800 py-2 px-10 rounded-lg") Cerrar sesion
+
+div(class="bg-indigo-700 py-5 hidden lg:block")
+    div(class="container mx-auto flex justify-between")
+        each category in categories 
+            a(href=`/category/${category.id}` class="text-sm font-bold uppercase text-white" )=category.name

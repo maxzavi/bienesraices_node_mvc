@@ -290,6 +290,7 @@ const deleteProperty = async (req, res)=>{
 const showProperty = async (req, res)=>{
 
     const { id } = req.params
+    const categories = await Category.findAll()
     //Validate exists property
     const property = await Property.findByPk(id,{
         include:[
@@ -306,7 +307,8 @@ const showProperty = async (req, res)=>{
     res.render("properties/show",{
         bar:true,
         property,
-        page:property.title
+        page:property.title,
+        categories
     })
 
 }

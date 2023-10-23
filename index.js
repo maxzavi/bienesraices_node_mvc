@@ -3,6 +3,9 @@ import csrf from 'csurf';
 import cookieParser from 'cookie-parser'
 import userroutes from './routes/userroutes.js'
 import propertiesroutes from './routes/propertiesroutes.js'
+import approutes from './routes/appRoutes.js'
+import apiroutes from './routes/apiRoutes.js'
+
 import db from './config/db.js'
 
 const app = express();
@@ -29,8 +32,11 @@ app.set('views','./views');
 app.use(express.static('public'));
 
 //Routes
+app.use("/", approutes)
 app.use("/user",userroutes);
 app.use("/",propertiesroutes);
+app.use("/api", apiroutes)
+
 
 app.listen(port,()=>{
     console.log(`Listening in port: ${port}`);
