@@ -23,6 +23,18 @@ block container
                         option(value=price.id)= price.name
 
         div(id="map-home" class="h-[600px] mt-5")
+        section(class="py-5")
+            h2(class="text-center text-4xl font-extrabold pt-10") Casas en Venta 
+
+            div(class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-14")
+                each id1 in ids1 
+                    include ./templates/card
+        section(class="py-5")
+            h2(class="text-center text-4xl font-extrabold pt-10") Departamentos en Venta 
+
+            div(class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-14")
+                each id1 in ids2 
+                    include ./templates/card
 
 block  scripts
     script(src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js")
