@@ -308,7 +308,8 @@ const showProperty = async (req, res)=>{
         bar:true,
         property,
         page:property.title,
-        categories
+        categories,
+        csrfToken: req.csrfToken()
     })
 
 }

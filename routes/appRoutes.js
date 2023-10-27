@@ -12,6 +12,7 @@ router.get("/", home)
 router.get("/category/:id",category)
 //Search
 router.get("/search", search)
+router.post("/search", search)
 
 //Not found 404
 router.get("/404", notfound)

@@ -1,4 +1,4 @@
-import { raw } from 'mysql2';
+import { Sequelize } from 'sequelize'
 import {Category, Price, Property} from '../models/index.js'
 
 const  home = async (req,res)=>{
@@ -35,28 +35,84 @@ const  home = async (req,res)=>{
             order:[ ['createdAt','DESC']]
         })
     ])
-    console.log(ids1);
-    console.log(ids2);
     res.render("home",{
         page:"Inicio",
         bar:true,
         categories,
         prices,
+        csrfToken: req.csrfToken(),
         ids1,
         ids2
     })
 }
 
-const  category = (req,res)=>{
-    res.send('Hello world!!!')
+const  category = async (req,res)=>{
+    const {id}= req.params
+    const category = await  Category.findByPk(id)
+
+    if (!category) return res.redirect("/404")
+
+    const [ categories, properties] = await  Promise.all(
+        [
+            Category.findAll(),
+            Property.findAll({
+                where:{
+                    categoryId: id
+                },
+                include:[
+                    {model: Price, as:'price'}
+                ]
+            })
+        ]
+    )
+    res.render('category',{
+        page:`${category.name}s en venta`,
+        properties,
+        bar:true,
+        categories,
+        csrfToken: req.csrfToken()
+    })
 }
 
-const  search = (req,res)=>{
-    res.send('Hello world!!!')
+const  search = async (req,res)=>{
+    const { word } = req.body
+    if (!word.trim()){
+        res.redirect('back')
+    }
+    const [properties, categories] = await Promise.all(
+        [
+            Property.findAll({
+                where:{
+                    title: {
+                        [Sequelize.Op.like]: "%"+word+ "%"
+                    }
+                },
+                include:[
+                    {model: Price, as:'price'}
+                ]
+            }),
+            Category.findAll()
+        ]
+    )
+    res.render('search',{
+        page:`Resultados de la búsqueda`,
+        properties,
+        bar:true,
+        categories,
+        csrfToken: req.csrfToken()
+    })
+
+    console.log(properties);
 }
 
-const  notfound = (req,res)=>{
-    res.send('Hello world!!!')
+const  notfound = async (req,res)=>{
+    const categories = await Category.findAll()
+    res.render('404',{
+        page:'No encontrada',
+        bar:true,
+        categories,
+        csrfToken: req.csrfToken()
+    })
 }
 
 export {

@@ -1,7 +1,8 @@
 header.bg-indigo-600.p-4
     .container.mx-auto.flex.justify-between.items-center
-        h1.text-2xl.text-white.font-extrabold.text-center Bienes
-            span.font-normal Raices
+        a(href="/")
+            h1.text-2xl.text-white.font-extrabold.text-center Bienes
+                span.font-normal Raices
         nav(class="my-5 text-sm md:flex md:items-center md:gap-3 font-bold text-white hidden")
             a(href="/user/register") Crear cuenta
             a(href="/user/login") Iniciar sesión
@@ -9,5 +10,12 @@ header.bg-indigo-600.p-4
 
 div(class="bg-indigo-700 py-5 hidden lg:block")
     div(class="container mx-auto flex justify-between")
-        each category in categories 
-            a(href=`/category/${category.id}` class="text-sm font-bold uppercase text-white" )=category.name
+        nav(class="flex gap-4 items-center")
+            each category in categories 
+                a(href=`/category/${category.id}` class="text-sm font-bold uppercase text-white" )=category.name
+        form(action="/search" method="POST" class="flex gap-3 items-center") 
+            input(type="hidden" name="_csrf" value=  csrfToken)
+
+            label(for="word" class="text-sm uppercase font-bold text-white") Búsqueda 
+            input(type="text" id="word" name="word" placeholder="Buscar propiedad" class="p-2 rounded-lg shadow text-sm")
+            input(type="submit" value="buscar" class="bg-indigo-800 hover:bg-indigo-400 rounded-lg text-white uppercase font-bold p-2 cursor-pointer text-sm")
