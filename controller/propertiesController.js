@@ -1,8 +1,9 @@
 import { validationResult} from 'express-validator'
 import { unlink } from 'node:fs/promises'
-import {Category, Price, Property} from '../models/index.js'
+import {Category, Price, Property, Message} from '../models/index.js'
 import { where } from 'sequelize';
 import { log } from 'node:console';
+import { isSeller } from '../helpers/index.js';
 
 const admin = async (req,res)=>{
     const { page : pageCurrent }= req.query;
@@ -288,7 +289,6 @@ const deleteProperty = async (req, res)=>{
 }
 
 const showProperty = async (req, res)=>{
-
     const { id } = req.params
     const categories = await Category.findAll()
     //Validate exists property
@@ -303,17 +303,71 @@ const showProperty = async (req, res)=>{
         return res.redirect("/404")
     }
  
- 
     res.render("properties/show",{
         bar:true,
         property,
         page:property.title,
         categories,
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
+        user: req.user,
+        isSeller: isSeller(req.user?.id, property.userId)
     })
 
 }
+const sendMessage = async (req,res)=>{
+    const { id } = req.params
 
+    const categories = await Category.findAll()
+    //Validate exists property
+    const property = await Property.findByPk(id,{
+        include:[
+            {model: Category, as: 'category'},
+            {model: Price, as:'price'}
+        ]
+    })
+
+    if(!property){
+        return res.redirect("/404")
+    }
+    let result = validationResult(req);
+    if (!result.isEmpty()){
+        const [categories, prices] =await Promise.all([
+            Category.findAll(),
+            Price.findAll()
+        ])
+        return res.render("properties/show",{
+            bar:true,
+            property,
+            page:property.title,
+            categories,
+            csrfToken: req.csrfToken(),
+            user: req.user,
+            isSeller: isSeller(req.user?.id, property.userId),
+            errores: result.array()
+        })
+    }
+ 
+    const { id:propertyId} = req.params
+    const { id:userId} = req.user
+    const { message } = req.body
+
+    await Message.create({
+        message,
+        userId,
+        propertyId
+    })
+    res.render("properties/show",{
+        bar:true,
+        property,
+        page:property.title,
+        categories,
+        csrfToken: req.csrfToken(),
+        user: req.user,
+        isSeller: isSeller(req.user?.id, property.userId),
+        sent:true
+    })
+
+}
 export  {
     admin,
     create,
@@ -323,5 +377,6 @@ export  {
     edit,
     saveChanges,
     deleteProperty,
-    showProperty
+    showProperty,
+    sendMessage
 }

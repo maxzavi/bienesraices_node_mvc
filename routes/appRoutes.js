@@ -1,12 +1,13 @@
 import express from 'express'
 import { category, home, notfound, search } from '../controller/appController.js'
+import { indentifyUser } from '../middleware/indentifyUser.js'
 
 
 const router =  express.Router()
 
 
 //Home page
-router.get("/", home)
+router.get("/", indentifyUser, home)
 
 //Categorys
 router.get("/category/:id",category)

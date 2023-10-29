@@ -1,8 +1,9 @@
 import express from 'express'
 import { body } from 'express-validator';
 import protectPath from '../middleware/protectPath.js';
-import {addImage, admin, create, save, saveImage, edit, saveChanges, deleteProperty, showProperty} from '../controller/propertiesController.js'
+import {addImage, admin, create, save, saveImage, edit, saveChanges, deleteProperty, showProperty, sendMessage} from '../controller/propertiesController.js'
 import upload from '../middleware/uploadImage.js'
+import { indentifyUser } from '../middleware/indentifyUser.js';
 
 
 const router = express.Router();
@@ -57,6 +58,10 @@ router.post("/properties/delete/:id",
 
 //Public zone
 
-router.get("/property/:id", showProperty)
+router.get("/property/:id",indentifyUser,  showProperty)
+router.post("/property/:id",
+    body('message').isLength({min:10}).withMessage('El mensaje no puede ir vacio o es muy corto (minimo 10)'),
+    indentifyUser,  
+    sendMessage)
 
 export default router
