@@ -1,7 +1,7 @@
 import express from 'express'
 import { body } from 'express-validator';
 import protectPath from '../middleware/protectPath.js';
-import {addImage, admin, create, save, saveImage, edit, saveChanges, deleteProperty, showProperty, sendMessage} from '../controller/propertiesController.js'
+import {addImage, admin, create, save, saveImage, edit, saveChanges, deleteProperty, showProperty, sendMessage, showMessages} from '../controller/propertiesController.js'
 import upload from '../middleware/uploadImage.js'
 import { indentifyUser } from '../middleware/indentifyUser.js';
 
@@ -63,5 +63,8 @@ router.post("/property/:id",
     body('message').isLength({min:10}).withMessage('El mensaje no puede ir vacio o es muy corto (minimo 10)'),
     indentifyUser,  
     sendMessage)
+
+router.get("/messages/:id", protectPath, showMessages)
+
 
 export default router

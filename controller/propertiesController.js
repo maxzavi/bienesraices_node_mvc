@@ -1,9 +1,9 @@
 import { validationResult} from 'express-validator'
 import { unlink } from 'node:fs/promises'
-import {Category, Price, Property, Message} from '../models/index.js'
+import {Category, Price, Property, Message, User} from '../models/index.js'
 import { where } from 'sequelize';
 import { log } from 'node:console';
-import { isSeller } from '../helpers/index.js';
+import { isSeller, formatDate } from '../helpers/index.js';
 
 const admin = async (req,res)=>{
     const { page : pageCurrent }= req.query;
@@ -28,10 +28,11 @@ const admin = async (req,res)=>{
                 },
                 include:[
                     {model: Category, as: 'category'},
-                    {model: Price, as:'price'}
+                    {model: Price, as:'price'},
+                    {model: Message, as:'messages'}
                 ]
             })
-            ,
+            , 
             Property.count({
                 where : {
                     userId:id
@@ -366,7 +367,33 @@ const sendMessage = async (req,res)=>{
         isSeller: isSeller(req.user?.id, property.userId),
         sent:true
     })
-
+}
+const showMessages = async (req,res)=>{
+    const { id } = req.params
+    //Validate exists property
+    const property = await Property.findByPk(id,{
+        include:[
+            {model: Message, as:'messages',
+            include:[
+                {model: User.scope('deletePassword'), as:'user'}
+            ]}
+        ]
+    })
+    if(!property){
+        return res.redirect("/my-properties")
+    }
+ 
+    //Validate user is owner of property
+    if(req.user.id.toString() !== property.userId.toString()){
+        return res.redirect("/my-properties")
+    }
+ 
+    res.render('properties/messages',{
+        page:'Mensajes',
+        bar:true,
+        messages: property.messages,
+        formatDate
+    })
 }
 export  {
     admin,
@@ -378,5 +405,6 @@ export  {
     saveChanges,
     deleteProperty,
     showProperty,
-    sendMessage
+    sendMessage,
+    showMessages
 }
