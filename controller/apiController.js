@@ -5,7 +5,10 @@ const properties = async (req, res)=>{
         include:[
             {model: Price, as: 'price'},
             {model: Category, as: 'category'}
-        ]
+        ],
+        where: {
+            published: true
+        }
     })
     res.json (result)
 }

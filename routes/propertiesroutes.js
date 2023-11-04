@@ -1,7 +1,7 @@
 import express from 'express'
 import { body } from 'express-validator';
 import protectPath from '../middleware/protectPath.js';
-import {addImage, admin, create, save, saveImage, edit, saveChanges, deleteProperty, showProperty, sendMessage, showMessages} from '../controller/propertiesController.js'
+import {addImage, admin, create, save, saveImage, edit, saveChanges, deleteProperty, showProperty, sendMessage, showMessages, changeStatus} from '../controller/propertiesController.js'
 import upload from '../middleware/uploadImage.js'
 import { indentifyUser } from '../middleware/indentifyUser.js';
 
@@ -55,6 +55,10 @@ router.post("/properties/edit/:id",
 router.post("/properties/delete/:id", 
     protectPath,
     deleteProperty);
+router.put("/property/:id", 
+    protectPath,
+    changeStatus);
+
 
 //Public zone
 

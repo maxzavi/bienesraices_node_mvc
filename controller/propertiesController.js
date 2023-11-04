@@ -1,15 +1,10 @@
 import { validationResult} from 'express-validator'
 import { unlink } from 'node:fs/promises'
 import {Category, Price, Property, Message, User} from '../models/index.js'
-import { where } from 'sequelize';
-import { log } from 'node:console';
 import { isSeller, formatDate } from '../helpers/index.js';
 
 const admin = async (req,res)=>{
     const { page : pageCurrent }= req.query;
-    
-    console.log(pageCurrent);
-
     const expresion = /^[0-9]$/
 
     if(!expresion.test(pageCurrent)){
@@ -289,6 +284,31 @@ const deleteProperty = async (req, res)=>{
 
 }
 
+//Change status in property
+
+const changeStatus = async (req, res)=>{
+    const { id } = req.params
+    //Validate exists property
+    const property = await Property.findByPk(id)
+    if(!property){
+        return res.redirect("/my-properties")
+    }
+ 
+    //Validate user is owner of property
+    if(req.user.id.toString() !== property.userId.toString()){
+        return res.redirect("/my-properties")
+    }
+    //Update
+
+    property.published = ! property.published
+
+    await property.save()
+
+    res.json({
+        result: 'OK'
+    })
+}
+
 const showProperty = async (req, res)=>{
     const { id } = req.params
     const categories = await Category.findAll()
@@ -300,7 +320,7 @@ const showProperty = async (req, res)=>{
         ]
     })
 
-    if(!property){
+    if(!property || !property.published){
         return res.redirect("/404")
     }
  
@@ -404,6 +424,7 @@ export  {
     edit,
     saveChanges,
     deleteProperty,
+    changeStatus,
     showProperty,
     sendMessage,
     showMessages

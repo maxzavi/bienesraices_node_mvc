@@ -55,12 +55,14 @@ const authenticate = async (req, res) =>{
     //Authenticate
     const jwtoken = generateJwt(user.id,user.name);
 
-    //console.log(jwtoken);
     return res.cookie('_token', jwtoken,{
         httpOnly:true
     }).redirect('/my-properties');
 }
 
+const signOut = async (req,res)=>{
+    return res.clearCookie('_token').redirect("/user/login")
+}
 const formRegister = (req,res)=>{
     res.render('auth/register',{
         page:"Crear cuenta",
@@ -127,9 +129,7 @@ const register = async (req,res)=>{
 
 const confirm = async (req, res)=>{
 
-    const { token } = req.params;
-    
-    //console.log(`Tokem ${token}`);
+    const { token } = req.params;    
     const user = await User.findOne({where:{token}});
 
     if (!user){
@@ -199,15 +199,11 @@ const resetPasswod = async (req, res)=>{
         message: "Se envió un email con las instrucciones",
         csrfToken: req.csrfToken()
     });
-
-    //console.log(user);
 };
 
 const validateToken = async (req, res)=>{
-    const { token } = req.params;
-    //console.log(token);
-    const user = await User.findOne({where:{token}});
-    //console.log(user);
+    const { token } = req.params
+    const user = await User.findOne({where:{token}})
     if (!user){
         return res.render('auth/confirm-account',{
             page:"Restablecer tu password",
@@ -263,6 +259,7 @@ const newPassword = async (req, res)=>{
 export {
     formLogin,
     authenticate,
+    signOut,
     formRegister,
     register,
     confirm,

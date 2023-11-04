@@ -11,7 +11,8 @@ const  home = async (req,res)=>{
         Property.findAll({
             limit: 3,
             where: {
-                categoryId: 1
+                categoryId: 1,
+                published: true
             },
             include:[
                 {
@@ -24,7 +25,8 @@ const  home = async (req,res)=>{
         Property.findAll({
             limit: 3,
             where: {
-                categoryId: 2
+                categoryId: 2,
+                published: true
             },
             include:[
                 {
@@ -57,7 +59,8 @@ const  category = async (req,res)=>{
             Category.findAll(),
             Property.findAll({
                 where:{
-                    categoryId: id
+                    categoryId: id,
+                    published: true
                 },
                 include:[
                     {model: Price, as:'price'}
@@ -85,7 +88,8 @@ const  search = async (req,res)=>{
                 where:{
                     title: {
                         [Sequelize.Op.like]: "%"+word+ "%"
-                    }
+                    },
+                    published: true
                 },
                 include:[
                     {model: Price, as:'price'}
@@ -101,8 +105,6 @@ const  search = async (req,res)=>{
         categories,
         csrfToken: req.csrfToken()
     })
-
-    console.log(properties);
 }
 
 const  notfound = async (req,res)=>{
