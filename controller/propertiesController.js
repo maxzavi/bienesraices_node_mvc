@@ -6,7 +6,6 @@ import { isSeller, formatDate } from '../helpers/index.js';
 const admin = async (req,res)=>{
     const { page : pageCurrent }= req.query;
     const expresion = /^[0-9]$/
-    const { user } = req
 
     if(!expresion.test(pageCurrent)){
         return res.redirect("/my-properties?page=1")
@@ -48,7 +47,7 @@ const admin = async (req,res)=>{
             total,
             limit,
             offset,
-            user
+            user: req.user
         })
     } catch (error) {
         console.log(error);
