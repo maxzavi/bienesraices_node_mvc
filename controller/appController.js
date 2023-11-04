@@ -2,9 +2,7 @@ import { Sequelize } from 'sequelize'
 import {Category, Price, Property} from '../models/index.js'
 
 const  home = async (req,res)=>{
-
-    //const categories = await Category.findAll()
-    
+    const { user } = req
     const [categories, prices, ids1, ids2 ]= await Promise.all([
         Category.findAll({raw : true}),
         Price.findAll({raw : true}),
@@ -44,11 +42,14 @@ const  home = async (req,res)=>{
         prices,
         csrfToken: req.csrfToken(),
         ids1,
-        ids2
+        ids2,
+        user
     })
 }
 
 const  category = async (req,res)=>{
+    const { user } = req
+    console.log(user);
     const {id}= req.params
     const category = await  Category.findByPk(id)
 
@@ -73,11 +74,13 @@ const  category = async (req,res)=>{
         properties,
         bar:true,
         categories,
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
+        user
     })
 }
 
 const  search = async (req,res)=>{
+    const { user } = req
     const { word } = req.body
     if (!word.trim()){
         res.redirect('back')
@@ -103,7 +106,8 @@ const  search = async (req,res)=>{
         properties,
         bar:true,
         categories,
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
+        user
     })
 }
 

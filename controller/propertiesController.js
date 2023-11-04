@@ -6,6 +6,7 @@ import { isSeller, formatDate } from '../helpers/index.js';
 const admin = async (req,res)=>{
     const { page : pageCurrent }= req.query;
     const expresion = /^[0-9]$/
+    const { user } = req
 
     if(!expresion.test(pageCurrent)){
         return res.redirect("/my-properties?page=1")
@@ -46,7 +47,8 @@ const admin = async (req,res)=>{
             pageCurrent: Number(pageCurrent),
             total,
             limit,
-            offset
+            offset,
+            user
         })
     } catch (error) {
         console.log(error);
@@ -67,7 +69,8 @@ const create = async  (req, res)=>{
         categories,
         prices,
         csrfToken: req.csrfToken(),
-        data:{}
+        data:{},
+        user: req.user
     })
 }
 
@@ -86,7 +89,8 @@ const save = async (req, res)=>{
             prices, 
             errores: result.array(),
             csrfToken: req.csrfToken(),
-            data: req.body
+            data: req.body,
+            user: req.user
         })
     }
     //Create property
@@ -137,7 +141,8 @@ const addImage = async (req, res)=> {
         page:`Agregar imagen: ${property.title}`,
         property,
         bar:true,
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
+        user: req.user
     })
 
 }
@@ -201,7 +206,8 @@ const edit = async (req,res)=>{
         prices,
         csrfToken: req.csrfToken(),
         data:property,
-        pageCurrent
+        pageCurrent,
+        user: req.user
     })
 
 }
@@ -237,6 +243,7 @@ const saveChanges = async (req,res) =>{
             errores: result.array(),
             csrfToken: req.csrfToken(),
             data: req.body,
+            user: req.user
         })
     }
     //Create property

@@ -10,10 +10,10 @@ const router =  express.Router()
 router.get("/", indentifyUser, home)
 
 //Categorys
-router.get("/category/:id",category)
+router.get("/category/:id",indentifyUser,category)
 //Search
-router.get("/search", search)
-router.post("/search", search)
+router.get("/search",indentifyUser, search)
+router.post("/search",indentifyUser, search)
 
 //Not found 404
 router.get("/404", notfound)
